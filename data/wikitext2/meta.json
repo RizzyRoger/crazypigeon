@@ -1,0 +1,6 @@
+{
+  "dataset": "wikitext-2-raw-v1",
+  "vocab_size": 50257,
+  "train_tokens": 2415651,
+  "val_tokens": 249750
+}

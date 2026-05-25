@@ -1,0 +1,66 @@
+# All (i) parameters — tune these as you iterate.
+# See README.md for recommended starting values and rationale.
+
+paths:
+  data_dir: data/wikitext2
+  checkpoints_dir: checkpoints
+  runs_dir: runs
+  analysis_dir: analysis
+
+model:
+  # Small enough to train locally; large enough for real vocabulary.
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  block_size: 256
+  dropout: 0.1
+
+baseline:
+  # (i) Training data: see prepare_data.py — default WikiText-2
+  batch_size: 32
+  learning_rate: 3.0e-4
+  max_iters: 5000
+  eval_interval: 250
+  eval_iters: 100
+  # (i) Stop when val loss reaches this (lower = more fluent / harder to shift)
+  target_val_loss: 3.4
+  warmup_iters: 200
+  lr_decay_iters: 5000
+  min_lr: 3.0e-5
+  grad_clip: 1.0
+
+readiness:
+  # Same metric as baseline target; script saves a "ready" marker when hit.
+  target_val_loss: 3.4
+
+validation_snapshot:
+  # Tokens to generate for pre/post comparison corpus
+  num_prompts: 50
+  tokens_per_sample: 200
+  temperature: 0.8
+
+ncr:
+  # (i) Random reinforcement interval in seconds (uniform)
+  min_interval_sec: 1.0
+  max_interval_sec: 30.0
+  # One generation step per second (Skinner: discrete time bins)
+  generation_interval_sec: 1.0
+  # (i) Total NCR phase duration
+  duration_hours: 2.0
+  # Tokens reinforced when timer fires (whatever model was doing)
+  reinforce_window_tokens: 64
+  reinforce_steps: 3
+  reinforce_lr: 1.0e-5
+  temperature: 0.9
+  seed: 42
+
+extinction:
+  # (i) Run without reinforcement to test persistence
+  duration_hours: 0.5
+  generation_interval_sec: 1.0
+  temperature: 0.9
+  seed: 43
+
+compare:
+  eval_batch_size: 16
+  eval_iters: 200
